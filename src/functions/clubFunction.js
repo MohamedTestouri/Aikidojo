@@ -278,11 +278,11 @@ exports.removeLesson = (req, res) => {
 };
 exports.addPresence = (req, res) => {
     Club.updateOne({_id: req.body.id, 'lesson._id': req.body.lesson}, {
-        $addToSet: {
-            'lesson.$.presence': [{
-                'lesson.$.presence.member': "req.body.member",
-                'lesson.$.presence.date': Date.now(),
-            }],
+        $push: {
+            'lesson.$.presence': {
+                member: req.body.member,
+               date: Date.now(),
+            },
         }
     }, function (error, result) {
         if (error) {

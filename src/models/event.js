@@ -4,7 +4,7 @@ const eventSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     title: {type: String, require: true},
     category: {type: String, require: true},
-    date: {type: Date, require: true},
+    date: {type: Date, require: false},
     place: [{
         longitude: {type: Number, require: true},
         latitude: {type: Number, require: true},
