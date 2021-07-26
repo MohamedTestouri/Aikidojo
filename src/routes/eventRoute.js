@@ -14,7 +14,7 @@ router.delete('/lesson/delete', removeLesson);
 router.put('/lesson/presence/add', addPresence);
 
 router.put('/grade/add', addGrade);
-router.put('/grade/edit', editGrade);
+router.patch('/grade/edit', editGrade);
 
 router.put('/members/join', joinEvent);
 router.put('/members/leave', leaveEvent);

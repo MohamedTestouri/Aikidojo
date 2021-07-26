@@ -136,10 +136,12 @@ exports.addPresence = (req, res) => {
 exports.addGrade = (req, res) =>{
 Event.findOneAndUpdate({_id: req.body.id}, {
         $addToSet: {
-            grade: [{
+            grades: [{
                 _id: new mongoose.Types.ObjectId(),
                 idUser: req.body.user,
                 grade: req.body.grade,
+                notes: null,
+                result: null,
             }],
         }
     }, function (error, result) {
@@ -152,13 +154,11 @@ Event.findOneAndUpdate({_id: req.body.id}, {
 };
 
 exports.editGrade = (req, res) =>{
-Event.findOneAndUpdate({_id: req.body.id, 'grade._id': req.body.grade}, {
-        $addToSet: {
-            grade: [{
-                notes: req.body.notes,
-                result: req.body.result,
-            }],
-        }
+Event.findOneAndUpdate({_id: req.body.id, 'grades._id': req.body.grade}, {
+        $set: {
+            'grades.$.notes': req.body.notes,
+            'grades.$.result': req.body.result,
+            },
     }, function (error, result) {
         if (error) {
             console.log(req.body);
