@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const clubSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     name: {type: String, require: true},
-    logo: {type: String, default: "logo.png"},
+    logo: {type: String, default: "logo.jpeg"},
     image: {type: String, default: "banner.png"},
     category: {type: String, default: "Aikido"},
     place: [{

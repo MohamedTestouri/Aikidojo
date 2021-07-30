@@ -9,6 +9,7 @@ const {
 } = require("../functions/clubFunction");
 const router = express.Router();
 
+
 router.get('/show', showClub);
 router.post('/add', addClub);
 router.patch('/edit', editClub);

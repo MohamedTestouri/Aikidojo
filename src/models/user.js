@@ -16,9 +16,9 @@ const userSchema = mongoose.Schema({
     phone: {type: Number},
     email: {type: String, require: true, unique: true, lowercase: true},
     password: {type: String, require: true},
-    image: {type: String, default: "avatar.jpg"},
+    image: {type: String, default: "avatar.jpeg"},
     role: {type: String, require: true},
-    isActive: {type: String, default: false},
+    isActive: {type: Boolean, default: false},
     resetCode: {type: Number, require: true},
     grade: [{
         _id: mongoose.Schema.Types.ObjectId,

@@ -16,7 +16,7 @@ const {
     removeAttestation,
     addSocial,
     editSocial,
-    removeSocial,
+    removeSocial,generateAttestation,
     getUserByRole
 } = require("../functions/userFunction");
 
@@ -33,6 +33,7 @@ router.patch('/forgetPassword', forgetPassword);
 router.patch('/resetPassword', resetPassword);
 router.patch('/updateProfile', updateProfile);
 router.patch('/updatePassword', updatePassword);
+router.get('/pdf', generateAttestation);
 
 router.put('/grade/add', addGrade);
 router.patch('/grade/edit', editGrade);

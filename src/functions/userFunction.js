@@ -5,9 +5,12 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const mailer = require('nodemailer');
+const { jsPDF } = require( "jspdf");
+const fs = require('fs');
 
 const Club = require('../models/club');
 const User = require('../models/user');
+const path = require("path");
 /** Config **/
 const transporter = mailer.createTransport({
     service: 'gmail',
@@ -161,19 +164,7 @@ exports.updateProfile = (req, res) => {
 };
 
 exports.getUser = (req, res) => {
-    const id = req.body.id;
-    User.findById(id)
-        .exec()
-        .then((doc) => {
-            if (doc) {
-                return res.status(200).json(doc);
-            } else {
-                return res.status(404).json({message: "404 NOT FOUND"});
-            }
-        })
-        .catch((error) => {
-            return res.status(error.code).json({error: error});
-        });
+    searchUser(req, res, req.body.id);
 };
 
 exports.getUserByRole = (req, res) => {
@@ -414,6 +405,41 @@ exports.removeSocial = (req, res) => {
         });
 };
 
+exports.generateAttestation = async (req, res) => {
+    const doc = new jsPDF({
+        orientation: "landscape",
+        unit: "in",
+        format: [4, 2]
+    });
+    const user = await User.findById(
+        req.body.id
+    );
+    if(user){
+        const array = user.attestation;
+        console.log(array);
+        for (obj of array){
+            if( obj._id.toString() === req.body.attestation){
+                doc.text(obj.logo, 1, 1);
+                doc.text(obj.category, 1, 2);
+                console.log(obj.logo);
+            }
+          console.log(obj._id);
+        }
+        doc.save(req.body.attestation+".pdf");
+        var filePath = path.dirname("app.js")+"/"+req.body.attestation+`.pdf`;
+console.log(filePath);
+        return res.status(200).download(req.body.attestation+'.pdf', function (error){
+            if(error){
+                console.log("Error:"+error);
+            }
+            fs.unlinkSync(filePath);
+        });
+
+    }
+    else{
+        return res.status(404).json({message: "Not found !"});
+    }
+};
 /** Utils functions **/
 
 function sendmail(mailOptions) {
@@ -425,3 +451,18 @@ function sendmail(mailOptions) {
         }
     });
 };
+
+function searchUser(req, res, id) {
+    User.findById(id)
+        .exec()
+        .then((doc) => {
+            if (doc) {
+                return res.status(200).json(doc);
+            } else {
+                return res.status(404).json({message: "404 NOT FOUND"});
+            }
+        })
+        .catch((error) => {
+            return res.status(error.code).json({error: error});
+        });
+}

@@ -19,8 +19,8 @@ exports.addClub = (req, res) => {
     const club = new Club({
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
-        logo: req.body.logo,
         image: req.body.image,
+        logo:req.body.logo,
         category: req.body.category,
         sensei: {_id: req.body.sensei},
         place: {
@@ -28,6 +28,7 @@ exports.addClub = (req, res) => {
             latitude: req.body.latitude,
         },
     });
+
     club.save().then(result => {
         console.log(result._id);
         return res.status(200).json(result);
