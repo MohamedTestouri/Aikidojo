@@ -419,6 +419,7 @@ exports.generateAttestation = async (req, res) => {
         console.log(array);
         for (obj of array){
             if( obj._id.toString() === req.body.attestation){
+                // Add your fields here !!
                 doc.text(obj.logo, 1, 1);
                 doc.text(obj.category, 1, 2);
                 console.log(obj.logo);
@@ -440,6 +441,30 @@ console.log(filePath);
         return res.status(404).json({message: "Not found !"});
     }
 };
+
+exports.generateCv = (req, res) =>{
+    const doc = new jsPDF({
+        orientation: "landscape",
+        unit: "in",
+        format: [4, 2]
+    });
+    User.findById(req.body.id).exec().then(
+        (result) =>{
+            // add the other fields here !!
+            doc.text(result.lastName, 1, 1);
+            doc.text(result.firstName, 1, 2);
+            doc.save(req.body.id+".pdf");
+            console.log(result);
+            var filePath = path.dirname("app.js")+"/"+req.body.id+`.pdf`;
+            return res.status(200).download(req.body.id+".pdf", function (error){
+                if(error){
+                    console.log("Error:"+error);
+                }
+                fs.unlinkSync(filePath);
+            })
+        }
+    ).catch(error => console.log(error));
+}
 /** Utils functions **/
 
 function sendmail(mailOptions) {
@@ -452,6 +477,13 @@ function sendmail(mailOptions) {
     });
 };
 
+/**
+ * to get user by id
+ * @param req : request
+ * @param res : response
+ * @param id : id user
+ * we needd it t
+ */
 function searchUser(req, res, id) {
     User.findById(id)
         .exec()

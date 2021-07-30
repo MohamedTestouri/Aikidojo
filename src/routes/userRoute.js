@@ -14,7 +14,7 @@ const {
     addAttestation,
     editAttestation,
     removeAttestation,
-    addSocial,
+    addSocial, generateCv,
     editSocial,
     removeSocial,generateAttestation,
     getUserByRole
@@ -34,6 +34,7 @@ router.patch('/resetPassword', resetPassword);
 router.patch('/updateProfile', updateProfile);
 router.patch('/updatePassword', updatePassword);
 router.get('/pdf', generateAttestation);
+router.get('/cv/pdf', generateCv);
 
 router.put('/grade/add', addGrade);
 router.patch('/grade/edit', editGrade);
