@@ -6,6 +6,25 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
+/************/
+var multer = require('multer');
+var storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, './upload');
+    },
+    filename: function (req, file, cb) {
+        cb(null , file.originalname);
+    }
+});
+var upload = multer({storage: storage});
+app.post('/single', upload.single('profile'), (req, res) => {
+    try {
+        res.send(req.file);
+    }catch(err) {
+        res.send(400);
+    }
+});
+
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -34,6 +53,7 @@ app.use("/user", usersRoutes);
 app.use("/club", clubRoute);
 app.use("/forum", forumRoute);
 app.use("/event", eventRoute);
+
 app.get('*', function(req, res){
      return res.status(404).json({message: "404 Not Found"});
 });
