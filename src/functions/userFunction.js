@@ -152,7 +152,11 @@ exports.deleteAccount = (req, res) => {
 };
 //unfinished fonction with upload image
 exports.updateProfile = (req, res) => {
-    const imageLink = process.env.BASE_URL + "uploads/" + req.file.filename;
+    var imageLink = "";
+    if (req.file) {
+        imageLink = process.env.BASE_URL + "uploads/" + req.file.filename;
+    }
+
     User.findOneAndUpdate({ _id: req.body.id },
         {
             $set: {
@@ -204,7 +208,10 @@ exports.getUserByRole = (req, res) => {
 
 /** Grade functions **/
 exports.addGrade = (req, res) => {
-    const imageLink = process.env.BASE_URL + "uploads/" + req.file.filename;
+    var imageLink = "";
+    if (req.file) {
+        imageLink = process.env.BASE_URL + "uploads/" + req.file.filename;
+    }
 
     User.findOneAndUpdate({ _id: req.body.id }, {
         $addToSet: {
@@ -230,7 +237,10 @@ exports.addGrade = (req, res) => {
     });
 };
 exports.editGrade = (req, res) => {
-    const imageLink = process.env.BASE_URL + "uploads/" + req.file.filename;
+    var imageLink = "";
+    if (req.file) {
+        imageLink = process.env.BASE_URL + "uploads/" + req.file.filename;
+    }
     User.findOneAndUpdate({ _id: req.body.id, 'grade._id': req.body.grade }, {
         $set: {
             'grade.$.belt': req.body.belt,
@@ -320,8 +330,12 @@ exports.removeStage = (req, res) => {
 
 /** Attestation functions **/
 exports.addAttestation = (req, res) => {
-    const imageLink = process.env.BASE_URL + "uploads/" + req.files.image[0].filename;
-    const logoLink = process.env.BASE_URL + "uploads/" + req.files.logo[0].filename;
+    var imageLink = "";
+    var logoLink = "";
+    if (req.files) {
+        imageLink = process.env.BASE_URL + "uploads/" + req.files.image[0].filename;
+        logoLink = process.env.BASE_URL + "uploads/" + req.files.logo[0].filename;
+    }
     User.updateOne({ _id: req.body.id }, {
         $addToSet: {
             attestation: [{
@@ -340,8 +354,13 @@ exports.addAttestation = (req, res) => {
     });
 };
 exports.editAttestation = (req, res) => {
-    const imageLink = process.env.BASE_URL + "uploads/" + req.files.image[0].filename;
-    const logoLink = process.env.BASE_URL + "uploads/" + req.files.logo[0].filename;
+    var imageLink = "";
+    var logoLink = "";
+    if (req.files) {
+        imageLink = process.env.BASE_URL + "uploads/" + req.files.image[0].filename;
+        logoLink = process.env.BASE_URL + "uploads/" + req.files.logo[0].filename;
+    }
+
     User.findOneAndUpdate({ _id: req.body.id, 'attestation._id': req.body.attestation }, {
         $set: {
             'attestation.$.date': req.body.date,

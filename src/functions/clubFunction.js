@@ -16,8 +16,12 @@ exports.showClub = (req, res) => {
     });
 };
 exports.addClub = (req, res) => {
-    const imageLink = process.env.BASE_URL + "uploads/" + req.files.image[0].filename;
-    const logoLink = process.env.BASE_URL + "uploads/" + req.files.logo[0].filename;
+    var imageLink = "";
+    var logoLink = "";
+    if (req.files) {
+        imageLink = process.env.BASE_URL + "uploads/" + req.files.image[0].filename;
+        logoLink = process.env.BASE_URL + "uploads/" + req.files.logo[0].filename;
+    }
     const club = new Club({
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
@@ -39,8 +43,12 @@ exports.addClub = (req, res) => {
     });
 };
 exports.editClub = (req, res) => {
-    const imageLink = process.env.BASE_URL + "uploads/" + req.files.image[0].filename;
-    const logoLink = process.env.BASE_URL + "uploads/" + req.files.logo[0].filename;
+    var imageLink = "";
+    var logoLink = "";
+    if (req.files) {
+        imageLink = process.env.BASE_URL + "uploads/" + req.files.image[0].filename;
+        logoLink = process.env.BASE_URL + "uploads/" + req.files.logo[0].filename;
+    }
     Club.findOneAndUpdate({ _id: req.body.id }, {
         $set: {
             name: req.body.name,
