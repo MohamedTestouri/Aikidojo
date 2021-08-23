@@ -12,17 +12,19 @@ exports.showClub = (req, res) => {
         res.status(200).json(club);
     }).catch(error => {
         console.log(error);
-        res.status(error.code).json({error: error});
+        res.status(error.code).json({ error: error });
     });
 };
 exports.addClub = (req, res) => {
+    const imageLink = process.env.BASE_URL + "uploads/" + req.files.image[0].filename;
+    const logoLink = process.env.BASE_URL + "uploads/" + req.files.logo[0].filename;
     const club = new Club({
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
-        image: req.body.image,
-        logo:req.body.logo,
+        image: imageLink,
+        logo: logoLink,
         category: req.body.category,
-        sensei: {_id: req.body.sensei},
+        sensei: { _id: req.body.sensei },
         place: {
             longitude: req.body.longitude,
             latitude: req.body.latitude,
@@ -37,13 +39,15 @@ exports.addClub = (req, res) => {
     });
 };
 exports.editClub = (req, res) => {
-    Club.findOneAndUpdate({_id: req.body.id}, {
+    const imageLink = process.env.BASE_URL + "uploads/" + req.files.image[0].filename;
+    const logoLink = process.env.BASE_URL + "uploads/" + req.files.logo[0].filename;
+    Club.findOneAndUpdate({ _id: req.body.id }, {
         $set: {
             name: req.body.name,
-            logo: req.body.logo,
-            image: req.body.image,
+            logo: logoLink,
+            image: imageLink,
             category: req.body.category,
-            sensei: {_id: req.body.sensei},
+            sensei: { _id: req.body.sensei },
             place: {
                 longitude: req.body.longitude,
                 latitude: req.body.latitude,
@@ -51,14 +55,14 @@ exports.editClub = (req, res) => {
         }
     }, function (error, result) {
         if (error) {
-            return res.status(error.code).json({error: error});
+            return res.status(error.code).json({ error: error });
         }
         //  console.log(updateOptions);
         return res.status(200).json(result);
     });
 };
 exports.removeClub = (req, res) => {
-    Club.remove({_id: req.body.id}).exec().then(result => {
+    Club.remove({ _id: req.body.id }).exec().then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         console.log(error);
@@ -71,13 +75,13 @@ exports.getClub = (req, res) => {
         res.status(200).json(club);
     }).catch(error => {
         console.log(error);
-        res.status(error.code).json({error: error});
+        res.status(error.code).json({ error: error });
     });
 };
 
 /** Member functions **/
 exports.addMember = (req, res) => {
-    Club.findOneAndUpdate({_id: req.body.id}, {
+    Club.findOneAndUpdate({ _id: req.body.id }, {
         $addToSet: {
             members: [{
                 _id: req.body.members,
@@ -86,43 +90,43 @@ exports.addMember = (req, res) => {
     }, function (error, result) {
         if (error) {
             console.log(req.body);
-            return res.status(error.code).json({error: error});
+            return res.status(error.code).json({ error: error });
         }
         return res.status(200).json(result);
     });
 };
 exports.removeMember = (req, res) => {
     Club.findOneAndUpdate(
-        {_id: req.body.id},
-        {$pull: {members: {_id: req.body.members}}},
+        { _id: req.body.id },
+        { $pull: { members: { _id: req.body.members } } },
         function (error, result) {
             if (error) {
-                return res.status(error.code).json({error: error});
+                return res.status(error.code).json({ error: error });
             }
             User.findOneAndUpdate(
-                {_id: req.body.members},
-                {$pull: {club: {_id: req.body.id}}},
+                { _id: req.body.members },
+                { $pull: { club: { _id: req.body.id } } },
                 function (error, result) {
                     if (error) {
-                        return res.status(error.code).json({error: error});
+                        return res.status(error.code).json({ error: error });
                     }
                     return res.status(200).json(result);
                 });
         });
 };
 exports.acceptInvitation = (req, res) => {
-    Club.findOneAndUpdate({_id: req.body.id}, {
+    Club.findOneAndUpdate({ _id: req.body.id }, {
         $addToSet: {
             members: [{
                 _id: req.body.members,
             }]
-        }, $pull: {invitations: {_id: req.body.members}}
+        }, $pull: { invitations: { _id: req.body.members } }
     }, function (error, result) {
         if (error) {
             console.log(req.body);
-            return res.status(error.code).json({error: error});
+            return res.status(error.code).json({ error: error });
         }
-        User.updateOne({_id: req.body.members}, {
+        User.updateOne({ _id: req.body.members }, {
             $addToSet: {
                 club: [{
                     _id: req.body.id,
@@ -130,7 +134,7 @@ exports.acceptInvitation = (req, res) => {
             }
         }, function (error, result) {
             if (error) {
-                return res.status(error.code).json({error: error});
+                return res.status(error.code).json({ error: error });
             }
             return res.status(200).json(result);
         });
@@ -138,17 +142,17 @@ exports.acceptInvitation = (req, res) => {
 };
 exports.declineInvitation = (req, res) => {
     Club.findOneAndUpdate(
-        {_id: req.body.id},
-        {$pull: {invitations: {_id: req.body.invitations}}},
+        { _id: req.body.id },
+        { $pull: { invitations: { _id: req.body.invitations } } },
         function (error, result) {
             if (error) {
-                return res.status(error.code).json({error: error});
+                return res.status(error.code).json({ error: error });
             }
             return res.status(200).json(result);
         });
 };
 exports.addSensei = (req, res) => {
-    Club.findOneAndUpdate({_id: req.body.id}, {
+    Club.findOneAndUpdate({ _id: req.body.id }, {
         $addToSet: {
             sensei: [{
                 _id: req.body.sensei,
@@ -157,25 +161,25 @@ exports.addSensei = (req, res) => {
     }, function (error, result) {
         if (error) {
             console.log(req.body);
-            return res.status(error.code).json({error: error});
+            return res.status(error.code).json({ error: error });
         }
         return res.status(200).json(result);
     });
 };
 exports.removeSensei = (req, res) => {
     Club.findOneAndUpdate(
-        {_id: req.body.id},
-        {$pull: {sensei: {_id: req.body.sensei}}},
+        { _id: req.body.id },
+        { $pull: { sensei: { _id: req.body.sensei } } },
         function (error, result) {
             if (error) {
-                return res.status(error.code).json({error: error});
+                return res.status(error.code).json({ error: error });
             }
             return res.status(200).json(result);
         });
 };
 
 exports.joinClub = (req, res) => {
-    Club.findOneAndUpdate({_id: req.body.id}, {
+    Club.findOneAndUpdate({ _id: req.body.id }, {
         $addToSet: {
             invitations: [{
                 _id: req.body.invitations,
@@ -184,7 +188,7 @@ exports.joinClub = (req, res) => {
     }, function (error, result) {
         if (error) {
             console.log(req.body);
-            return res.status(error.code).json({error: error});
+            return res.status(error.code).json({ error: error });
         }
         return res.status(200).json(result);
     });
@@ -192,7 +196,7 @@ exports.joinClub = (req, res) => {
 
 /** Contact functions **/
 exports.addContact = (req, res) => {
-    Club.updateOne({_id: req.body.id}, {
+    Club.updateOne({ _id: req.body.id }, {
         $addToSet: {
             contact: [{
                 email: req.body.email,
@@ -203,13 +207,13 @@ exports.addContact = (req, res) => {
         }
     }, function (error, result) {
         if (error) {
-            return res.status(error.code).json({error: error});
+            return res.status(error.code).json({ error: error });
         }
         return res.status(200).json(result);
     });
 };
 exports.editContact = (req, res) => {
-    Club.findOneAndUpdate({_id: req.body.id, 'contact._id': req.body.contact}, {
+    Club.findOneAndUpdate({ _id: req.body.id, 'contact._id': req.body.contact }, {
         $set: {
             'contact.$.email': req.body.email,
             'contact.$.webSite': req.body.webSite,
@@ -218,7 +222,7 @@ exports.editContact = (req, res) => {
         }
     }, function (error, result) {
         if (error) {
-            return res.status(error.code).json({error: error});
+            return res.status(error.code).json({ error: error });
         }
         return res.status(200).json(result);
     });
@@ -226,11 +230,11 @@ exports.editContact = (req, res) => {
 };
 exports.removeContact = (req, res) => {
     Club.findOneAndUpdate(
-        {_id: req.body.id},
-        {$pull: {contact: {_id: req.body.contact}}},
+        { _id: req.body.id },
+        { $pull: { contact: { _id: req.body.contact } } },
         function (error, result) {
             if (error) {
-                return res.status(error.code).json({error: error});
+                return res.status(error.code).json({ error: error });
             }
             return res.status(200).json(result);
         });
@@ -238,7 +242,7 @@ exports.removeContact = (req, res) => {
 
 /** Lesson functions **/
 exports.addLesson = (req, res) => {
-    Club.updateOne({_id: req.body.id}, {
+    Club.updateOne({ _id: req.body.id }, {
         $addToSet: {
             lesson: [{
                 _id: new mongoose.Types.ObjectId(),
@@ -248,13 +252,13 @@ exports.addLesson = (req, res) => {
         }
     }, function (error, result) {
         if (error) {
-            return res.status(error.code).json({error: error});
+            return res.status(error.code).json({ error: error });
         }
         return res.status(200).json(result);
     });
 };
 exports.editLesson = (req, res) => {
-    Club.findOneAndUpdate({_id: req.body.id, 'lesson._id': req.body.lesson}, {
+    Club.findOneAndUpdate({ _id: req.body.id, 'lesson._id': req.body.lesson }, {
         $set: {
             'lesson.$.title': req.body.title,
             'lesson.$.date': req.body.date,
@@ -268,26 +272,26 @@ exports.editLesson = (req, res) => {
 };
 exports.removeLesson = (req, res) => {
     Club.findOneAndUpdate(
-        {_id: req.body.id},
-        {$pull: {lesson: {_id: req.body.lesson}}},
+        { _id: req.body.id },
+        { $pull: { lesson: { _id: req.body.lesson } } },
         function (error, result) {
             if (error) {
-                return res.status(error.code).json({error: error});
+                return res.status(error.code).json({ error: error });
             }
             return res.status(200).json(result);
         });
 };
 exports.addPresence = (req, res) => {
-    Club.updateOne({_id: req.body.id, 'lesson._id': req.body.lesson}, {
+    Club.updateOne({ _id: req.body.id, 'lesson._id': req.body.lesson }, {
         $push: {
             'lesson.$.presence': {
                 member: req.body.member,
-               date: Date.now(),
+                date: Date.now(),
             },
         }
     }, function (error, result) {
         if (error) {
-            return res.status(error.code).json({error: error});
+            return res.status(error.code).json({ error: error });
         }
         console.log(result);
         console.log(req.body);

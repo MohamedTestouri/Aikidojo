@@ -1,4 +1,7 @@
 const express = require('express');
+const multer = require("multer");
+// importing multer configuration function and the url of the web site(domain name)
+const { upload } = require("../utils/multerConfig");
 const {
     showClub, addClub, removeClub, editClub, acceptInvitation, addContact, addLesson,
     addMember, addPresence, getClub,
@@ -9,10 +12,10 @@ const {
 } = require("../functions/clubFunction");
 const router = express.Router();
 
-
+var multipleUpload = upload.fields([{ name: "logo", maxCount: 1 }, { name: "image", maxCount: 1 }]);
 router.get('/show', showClub);
-router.post('/add', addClub);
-router.patch('/edit', editClub);
+router.post('/add', multipleUpload, addClub);
+router.patch('/edit', multipleUpload, editClub);
 router.delete('/delete', removeClub);
 router.get('/getClub', getClub);
 
