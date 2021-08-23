@@ -167,10 +167,10 @@ exports.updateProfile = (req, res) => {
             },
             $push: {
                 address: {
-                    street: req.body.address.street,
-                    city: req.body.address.city,
-                    country: req.body.address.country,
-                    zipCode: req.body.address.zipCode,
+                    street: req.body.street,
+                    city: req.body.city,
+                    country: req.body.country,
+                    zipCode: req.body.zipCode,
                 }
             }
         },

@@ -37,8 +37,6 @@ exports.addPost = (req, res) => {
     });
 };
 exports.editPost = async (req, res) => {
-    //const user = await User.findById(req.body.idUser);
-    //if (!user) return res.status(400).send("User not found");
     if (req.file) {
         const imageLink = process.env.BASE_URL + "uploads/" + req.file.filename;
         Post.update({ _id: req.body._id, idUser: req.body.idUser },
