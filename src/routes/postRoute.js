@@ -1,18 +1,20 @@
 const express = require('express');
-const {showForum,
+const { showForum,
     addComment,
     addPost,
     dislikePost,
     editComment,
     editPost,
     likePost, removeComment, getPost,
-    removePost} = require("../functions/forumFunction");
+    removePost } = require("../functions/postFunction");
+
 const router = express.Router();
+const { upload } = require("../utils/multerConfig");
 
 router.get('/showForum', showForum);
 router.get('/getPost', getPost);
-router.post('/addPost', addPost);
-router.patch('/editPost', editPost);
+router.post('/addPost', upload.single('image'), addPost);
+router.patch('/editPost', upload.single('image'), editPost);
 router.delete('/removePost', removePost);
 router.patch('/likePost', likePost);
 router.patch('/dislikePost', dislikePost);

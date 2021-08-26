@@ -16,12 +16,14 @@ const {
     removeAttestation,
     addSocial, generateCv,
     editSocial,
-    removeSocial,generateAttestation,
+    removeSocial, generateAttestation,
     getUserByRole
 } = require("../functions/userFunction");
 
 const express = require('express');
 const router = express.Router();
+const { upload } = require("../utils/multerConfig");
+var multipleUpload = upload.fields([{ name: "logo", maxCount: 1 }, { name: "image", maxCount: 1 }]);
 
 router.post('/login', login);
 router.post('/register', register);
@@ -31,13 +33,13 @@ router.get('/getUser', getUser);
 router.get('/getUserByRole', getUserByRole);
 router.patch('/forgetPassword', forgetPassword);
 router.patch('/resetPassword', resetPassword);
-router.patch('/updateProfile', updateProfile);
+router.patch('/updateProfile', upload.single('image'), updateProfile);
 router.patch('/updatePassword', updatePassword);
 router.get('/pdf', generateAttestation);
 router.get('/cv/pdf', generateCv);
 
-router.put('/grade/add', addGrade);
-router.patch('/grade/edit', editGrade);
+router.put('/grade/add', upload.single('image'), addGrade);
+router.patch('/grade/edit', upload.single('image'), editGrade);
 router.delete('/grade/delete', removeGrade);
 
 router.put('/stage/add', addStage);
@@ -46,8 +48,8 @@ router.delete('/stage/delete', removeStage);
 
 router.delete('/club/delete', removeClub);
 
-router.put('/attestation/add', addAttestation);
-router.patch('/attestation/edit', editAttestation);
+router.put('/attestation/add', multipleUpload, addAttestation);
+router.patch('/attestation/edit', multipleUpload, editAttestation);
 router.delete('/attestation/delete', removeAttestation);
 
 router.put('/socialMedia/add', addSocial);
