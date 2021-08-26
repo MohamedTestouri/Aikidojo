@@ -188,11 +188,11 @@ exports.updateProfile = (req, res) => {
 };
 
 exports.getUser = (req, res) => {
-    searchUser(req, res, req.body.id);
+    searchUser(req, res, req.params.id);
 };
 
 exports.getUserByRole = (req, res) => {
-    User.findOne({ role: req.body.role })
+    User.findOne({ role: req.params.role })
         .exec()
         .then((doc) => {
             if (doc) {
